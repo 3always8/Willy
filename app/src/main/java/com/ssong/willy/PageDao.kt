@@ -13,8 +13,13 @@ interface PageDao {
     @Insert(onConflict = REPLACE)
     fun insert(page: Page)
 
-    @Query("SELECT * FROM 'Page' WHERE 'title' = :title")
+    //This made my DB invisible.. now I fixed it, but before that
+    //I changed every usage of 'getPage' function to 'getAll()' function.
+    @Query("SELECT * FROM Page WHERE title = :title")
     fun getPage(title: String): Page
+
+    @Query("SELECT * FROM Page WHERE id = :id")
+    fun getPage(id: Int): Page
 
     @Query("DELETE from page")
     fun deleteAll()

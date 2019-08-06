@@ -3,6 +3,6 @@
     <item
             android:id="@+id/action_finish"
             app:showAsAction="ifRoom"
-            android:title="finish"/>
+            android:title="Save"/>
 
 </menu>
