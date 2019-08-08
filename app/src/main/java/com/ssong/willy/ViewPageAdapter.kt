@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.view.View
 import android.view.ViewGroup
+import kotlin.math.acos
 
 class ViewPageAdapter internal constructor (fm: FragmentManager) : FragmentPagerAdapter(fm) {
     private val COUNT = 3
@@ -38,10 +39,15 @@ class ViewPageAdapter internal constructor (fm: FragmentManager) : FragmentPager
     }
 
     override fun setPrimaryItem(container: ViewGroup, position: Int, `object`: Any) {
+        //This function is called when displayed fragment is changed.
         if (currentFragment != `object`) {
             currentFragment = `object` as Fragment
 
+            //오류가 나는 문장
+            MainActivity().adapter?.currentFragment?.view?.saveAndFinish()
+
         }
+
         super.setPrimaryItem(container, position, `object`)
     }
 

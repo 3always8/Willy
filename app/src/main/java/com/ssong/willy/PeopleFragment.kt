@@ -18,9 +18,6 @@ import java.lang.Compiler.command
 
 
 
-
-
-
 class PeopleFragment : Fragment() {
 
     private var pageDb: PageDB? = null

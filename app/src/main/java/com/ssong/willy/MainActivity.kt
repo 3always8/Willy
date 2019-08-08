@@ -63,6 +63,7 @@ class MainActivity : AppCompatActivity() {
         val threadDb = Thread(rDb)
         threadDb.start()
 
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
