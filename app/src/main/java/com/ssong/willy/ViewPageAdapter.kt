@@ -1,5 +1,7 @@
 package com.ssong.willy
 
+import android.app.PendingIntent.getActivity
+import android.content.Context
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
@@ -7,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import kotlin.math.acos
 
-class ViewPageAdapter internal constructor (fm: FragmentManager) : FragmentPagerAdapter(fm) {
+class ViewPageAdapter internal constructor (fm: FragmentManager, val context: Context) : FragmentPagerAdapter(fm) {
     private val COUNT = 3
     public var currentFragment : Fragment? = null
 
@@ -43,13 +45,34 @@ class ViewPageAdapter internal constructor (fm: FragmentManager) : FragmentPager
         if (currentFragment != `object`) {
             currentFragment = `object` as Fragment
 
-            //오류가 나는 문장
-            MainActivity().adapter?.currentFragment?.view?.saveAndFinish()
+
+/*
+            So, this code was right for the whole time -
+            - only need to be passed as a factor.
+*/
+            // Still, clearFocus() is not working.
+            var activity = context as MainActivity
+            activity.main()
 
         }
 
         super.setPrimaryItem(container, position, `object`)
+
     }
 
+
+/*
+    This interface helps saveAndFinish function to work when fragment changes.
+    To to this, ViewPagerAdapter is changed to get one more factor -
+    "This" from MainActivity.
+    Now ViewPageAdapter can access "the" instance of the MainActivity.
+
+    In MainActivity, there is main() function written.
+    It calls View.saveAndFinish().
+*/
+    interface SaveInterface {
+        fun main()
+
+    }
 
 }

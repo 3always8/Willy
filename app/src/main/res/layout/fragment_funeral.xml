@@ -5,10 +5,9 @@
              android:layout_height="match_parent"
              tools:context=".FuneralFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <EditText
+    <com.ssong.willy.WillyPageView
+            android:id="@+id/willy_page_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/hello_blank_fragment"/>
+            android:layout_height="match_parent"/>
 
 </FrameLayout>

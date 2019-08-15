@@ -5,7 +5,7 @@ import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
 
 @Entity(tableName = "Page")
-class Page (@PrimaryKey var id: Long?,
+class Page (@PrimaryKey var id: Int?,
         @ColumnInfo(name = "title") var title: String?,
         @ColumnInfo(name = "content") var content: String?
 ){

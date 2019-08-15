@@ -17,12 +17,11 @@ import android.widget.EditText
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlin.concurrent.thread
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ViewPageAdapter.SaveInterface {
 
-    private var pageDb: PageDB? = null
+    var pageDb: PageDB? = null
     var viewPager: ViewPager? = null
     var adapter: ViewPageAdapter? = null
-    var contentArray: Array<String?>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,8 +34,9 @@ class MainActivity : AppCompatActivity() {
         var tabLayout = findViewById<TabLayout>(R.id.tabs_main)
 //      line under the current tab
         viewPager = findViewById<ViewPager>(R.id.view_pager)
-        adapter = ViewPageAdapter(supportFragmentManager)
+        adapter = ViewPageAdapter(supportFragmentManager, this)
         viewPager?.adapter = adapter
+
         val r = Runnable{
             tabLayout.setupWithViewPager(viewPager)
         }
@@ -46,23 +46,15 @@ class MainActivity : AppCompatActivity() {
 
         val rDb = Runnable{
             val pageList =pageDb?.pageDao()?.getAll()
-            if (pageList?.get(0)?.content == null ){
-                pageDb?.pageDao()?.insert(Page(0,"people","initial data"))
-            }
-            if (pageList?.get(1)?.content == null ){
-                pageDb?.pageDao()?.insert(Page(1,"money","initial data"))
-            }
-            if (pageList?.get(2)?.content == null ){
-                pageDb?.pageDao()?.insert(Page(2,"funeral","initial data"))
-            }
+            pageDb?.pageDao()?.initialInsert(Page(0,"people","initial data"))
+            pageDb?.pageDao()?.initialInsert(Page(1,"money","initial data"))
+            pageDb?.pageDao()?.initialInsert(Page(2,"funeral","initial data"))
 
             Log.d("TAG", pageDb?.pageDao()?.getAll()?.get(0)?.content)
-
 
         }
         val threadDb = Thread(rDb)
         threadDb.start()
-
 
     }
 
@@ -85,12 +77,23 @@ class MainActivity : AppCompatActivity() {
         var editTextView = adapter?.currentFragment?.view?.findViewById<EditText>(R.id.edit_text)
 
         val r = Runnable{
-            val page = Page(0,"people",editTextView?.text.toString())
-            pageDb?.pageDao()?.insert(page)
-            contentArray?.set(0, editTextView?.text.toString())
-            if (pageDb?.pageDao()?.getAll()?.get(0) != null ){
-                Log.d("TAG", pageDb?.pageDao()?.getAll()?.get(0)?.content)
+            var i = when (adapter?.currentFragment) {
+                is PeopleFragment -> 0
+                is MoneyFragment -> 1
+                is FuneralFragment -> 2
+                else -> 0
             }
+            var name = when (adapter?.currentFragment) {
+                is PeopleFragment -> "people"
+                is MoneyFragment -> "money"
+                is FuneralFragment -> "funeral"
+                else -> "people"
+            }
+            Log.d("TAG", editTextView?.text.toString())
+            val page = Page(i, name, editTextView?.text.toString())
+            pageDb?.pageDao()?.insert(page)
+            Log.d("TAG", pageDb?.pageDao()?.getAll()?.get(i)?.content)
+
         }
         val thread = Thread(r)
         thread.start()
@@ -98,7 +101,13 @@ class MainActivity : AppCompatActivity() {
         //Finish Writing: turn off the keyboard and clear focus.
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(windowToken, 0)
+
         clearFocus()
+
     }
 
+    override fun main() {
+        this.adapter?.currentFragment?.view?.saveAndFinish()
+
+    }
 }

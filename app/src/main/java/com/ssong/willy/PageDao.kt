@@ -2,6 +2,7 @@ package com.ssong.willy
 
 import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Insert
+import android.arch.persistence.room.OnConflictStrategy.IGNORE
 import android.arch.persistence.room.OnConflictStrategy.REPLACE
 import android.arch.persistence.room.Query
 
@@ -13,8 +14,12 @@ interface PageDao {
     @Insert(onConflict = REPLACE)
     fun insert(page: Page)
 
+    @Insert(onConflict = IGNORE)
+    fun initialInsert(page: Page)
+
     //This made my DB invisible.. now I fixed it, but before that
     //I changed every usage of 'getPage' function to 'getAll()' function.
+    //And still getPage function is not working properly?
     @Query("SELECT * FROM Page WHERE title = :title")
     fun getPage(title: String): Page
 
